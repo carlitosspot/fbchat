@@ -110,20 +110,37 @@
 		// });
     
     $( document ).ready(function() {
-        $.get( "gettoken", function( AUTH_TOKEN ) {
-            console.log('token is: '+AUTH_TOKEN);
 
-            var ref = new Firebase("https://boiling-heat-5886.firebaseio.com");
+            counter = 0;
+             $("#submit-btn").bind("click", function(event) {
 
-            ref.authWithCustomToken(AUTH_TOKEN, function(error, authData) {
-                  if (error) {
-                    console.log("Login Failed!", error);
-                  } else {
-                    console.log("Login Succeeded!", authData);
-                  }
-            } );
+                counter++;
+                $.get( "gettoken", function( AUTH_TOKEN ) {
+                    console.log('token is: '+AUTH_TOKEN);
 
+                    var ref = new Firebase("https://boiling-heat-5886.firebaseio.com/chatrooms");
+                    console.log('loggin in to firebase..');
+                    ref.authWithCustomToken(AUTH_TOKEN, function(error, authData) {
+                          if (error) {
+                            console.log("Login Failed!", error);
+                        } else {
+                            console.log(authData);
+                            ref.push({comment: 'message '+counter }, function(error) {
+                                if (error !== null) {
+                                    alert('Unable to push comments to Firebase!');
+                                }
+                            });
+                        }
+                    } );
+
+                });
+
+                event.preventDefault();
+                event.stopPropagation();
+        
         });
+
+
     });
         
 
